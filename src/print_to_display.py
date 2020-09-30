@@ -27,6 +27,9 @@ CWD = os.getcwd()
 PATH = "/home/pi/indoor_ag/data/sensors/saffron_grow_sensors.csv"
 LOG_PATH = "/home/pi/indoor_ag/logs/print_to_display_error_log.txt"
 
+if not os.path.exists(LOG_PATH):
+    open(LOG_PATH, "w+").close()
+
 # initialize i2c
 i2c = busio.I2C(board.SCL, board.SDA)
 logging.basicConfig(
