@@ -5,7 +5,7 @@ from datetime import datetime
 from picamera import PiCamera
 from time import sleep
 
-IMAGE_DIR = "/home/pi/indoor_ag/images"
+IMAGE_DIR = "/home/pi/indoor_ag/data/images"
 if not os.path.exists(IMAGE_DIR):
     os.mkdir(IMAGE_DIR)
 
