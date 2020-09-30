@@ -1,4 +1,10 @@
 #!/usr/bin/python3
+
+"""
+If the pi locks up it requires a restart. This checks that the size
+of the sensor csv file is increasing and if not restarts the pi.
+"""
+
 import os
 import time
 
