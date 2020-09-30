@@ -20,8 +20,8 @@ import board
 import busio
 import digitalio
 import numpy as np
-import pandas as pd
 
+time.sleep(60)
 
 CWD = os.getcwd()
 PATH = "/home/pi/indoor_ag/data/sensors/saffron_grow_sensors.csv"
