@@ -1,13 +1,21 @@
 #!/usr/bin/env python3
+import grp
 import os
+import pwd
 from datetime import datetime
 
 from picamera import PiCamera
 from time import sleep
 
 IMAGE_DIR = "/home/pi/indoor_ag/data/images"
+
+uid = pwd.getpwnam("pi").pw_uid
+gid = grp.getgrnam("pi").gr_gid
+
 if not os.path.exists(IMAGE_DIR):
     os.mkdir(IMAGE_DIR)
+    os.chown(IMAGE_DIR, uid, gid)
+
 
 camera = PiCamera()
 camera.resolution = (1296, 972)

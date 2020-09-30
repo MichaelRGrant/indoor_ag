@@ -6,8 +6,10 @@ to an LCD display hooked up to the RPi.
 Author: Michael Grant
 """
 
+import grp
 import logging
 import os
+import pwd
 import time
 
 import adafruit_ads1x15.ads1115 as ADS
@@ -23,12 +25,14 @@ import numpy as np
 
 time.sleep(60)
 
-CWD = os.getcwd()
-PATH = "/home/pi/indoor_ag/data/sensors/saffron_grow_sensors.csv"
 LOG_PATH = "/home/pi/indoor_ag/logs/print_to_display_error_log.txt"
+
+uid = pwd.getpwnam("pi").pw_uid
+gid = grp.getgrnam("pi").gr_gid
 
 if not os.path.exists(LOG_PATH):
     open(LOG_PATH, "w+").close()
+    os.chown(LOG_PATH, uid, gid)
 
 # initialize i2c
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -63,11 +67,6 @@ ccs811 = CCS.CCS811(tca_multi[1])
 while True:
     try:
         lcd.clear()
-        # always just read the last, most current, row
-
-        # sensor_data_df = pd.read_csv(PATH).tail(1)
-        # time_ = sensor_data_df["time"].values
-
         temp_c_room = round(bme680_1.temperature, 1)
         rh_room = round(bme680_1.humidity, 1)
 
@@ -78,13 +77,6 @@ while True:
             eqco2_room = ccs811.eco2
         except:
             eqco2_room = np.nan
-
-        # room_temp = sensor_data_df["temp_c_room"].values
-        # room_rh = sensor_data_df["rh_room"].values
-        # room_co2 = sensor_data_df["co2_room"].values
-        # lcd.message = "{temp}C | {rh}%\n{co2} ppm CO2".format(
-        #     temp=room_temp[0], rh=room_rh[0], co2=room_co2[0]
-        # )
 
         lcd.message = "{temp}C | {rh}%\n{co2} ppm CO2".format(
             temp=temp_c_room, rh=rh_room, co2=eqco2_room

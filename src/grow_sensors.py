@@ -1,6 +1,8 @@
 #!/usr/bin/python3
+import grp
 import logging
 import os
+import pwd
 import sys
 import time
 
@@ -21,14 +23,23 @@ sys.path.append("./src")
 
 # os.path.join does not work on the pi, it always
 # reverts to the top-level directory: /
-PATH = "/home/pi/indoor_ag/data/sensors/saffron_grow_sensors.csv"
+SENSOR_PATH = "/home/pi/indoor_ag/data/sensors/saffron_grow_sensors.csv"
 LOG_PATH = "/home/pi/indoor_ag/logs/error_log.txt"
 
+uid = pwd.getpwnam("pi").pw_uid
+gid = grp.getgrnam("pi").gr_gid
+
 # check if PATH exists and if not create empty dataframe
-if os.path.isfile(PATH):
-    sensor_df = pd.read_csv(PATH)
+if os.path.exists(SENSOR_PATH):
+    sensor_df = pd.read_csv(SENSOR_PATH)
 else:
     sensor_df = pd.DataFrame()
+    open(SENSOR_PATH, "w+").close()
+    os.chown(SENSOR_PATH, uid, gid)
+
+if not os.path.exists(LOG_PATH):
+    open(LOG_PATH, "w+").close()
+    os.chown(LOG_PATH, uid, gid)
 
 # initialize i2c
 i2c = busio.I2C(board.SCL, board.SDA)
@@ -133,7 +144,7 @@ while True:
             index=[0],
         ).round(1)
         sensor_df = sensor_df.append(tmp_df)
-        sensor_df.to_csv(PATH, index=False)
+        sensor_df.to_csv(SENSOR_PATH, index=False)
         time.sleep(300)  # 5 minutes
     except Exception as e:
         print(e)
