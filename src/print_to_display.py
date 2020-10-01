@@ -23,6 +23,9 @@ import busio
 import digitalio
 import numpy as np
 
+sys.path.append(".")
+from soil_moisture import get_soil_moisture
+
 time.sleep(60)
 
 LOG_PATH = "/home/pi/indoor_ag/logs/print_to_display_error_log.txt"
@@ -63,12 +66,14 @@ tca_multi = TCA.TCA9548A(i2c)
 ads1115 = ADS.ADS1115(tca_multi[1])
 bme680_1 = BME.Adafruit_BME680_I2C(tca_multi[1])
 ccs811 = CCS.CCS811(tca_multi[1])
+chan = AnalogIn(ads1115, ADS.P0)
 
 while True:
     try:
         lcd.clear()
         temp_c_room = round(bme680_1.temperature, 1)
         rh_room = round(bme680_1.humidity, 1)
+        soil_moisture = get_soil_moisture(chan.voltage)
 
         # This sensor can malfunction and throw and error, so
         # this try/except block catches any errors, waits 1 minute
@@ -78,8 +83,12 @@ while True:
         except:
             eqco2_room = np.nan
 
-        lcd.message = "{temp}C | {rh}%\n{co2} ppm CO2".format(
-            temp=temp_c_room, rh=rh_room, co2=eqco2_room
+        lcd.message = "{temp}C | {rh}%\n{co2} ppm CO2\n" \
+                      "{soil_moisture}%".format(
+            temp=temp_c_room,
+            rh=rh_room,
+            co2=eqco2_room,
+            soil_moisture=soil_moisture
         )
         time.sleep(5)
 
