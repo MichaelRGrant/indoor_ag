@@ -19,7 +19,7 @@ from adafruit_ads1x15.analog_in import AnalogIn
 import pandas as pd
 
 sys.path.append(".")
-import ds18b20 as reservoir_temp
+# import ds18b20 as reservoir_temp
 
 # os.path.join does not work on the pi, it always
 # reverts to the top-level directory: /

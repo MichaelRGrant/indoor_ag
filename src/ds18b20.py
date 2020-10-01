@@ -11,16 +11,20 @@ base_dir = '/sys/bus/w1/devices/'
 # Get all the filenames begin with 28 in the path base_dir.
 device_folder = glob.glob(base_dir + '28*')[0]
 device_file = device_folder + '/w1_slave'
+
+
 def read_rom():
-    name_file=device_folder + '/name'
+    name_file = device_folder + '/name'
     f = open(name_file, 'r')
     return f.readline()
+
 
 def read_temp_raw():
     f = open(device_file, 'r')
     lines = f.readlines()
     f.close()
     return lines
+
 
 def read_temp():
     lines = read_temp_raw()
