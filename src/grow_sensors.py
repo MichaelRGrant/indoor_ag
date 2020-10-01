@@ -20,7 +20,6 @@ import pandas as pd
 
 sys.path.append(".")
 import ds18b20 as reservoir_temp
-from soil_moisture import get_soil_moisture
 
 # os.path.join does not work on the pi, it always
 # reverts to the top-level directory: /
@@ -61,7 +60,6 @@ tca_multi = TCA.TCA9548A(i2c)
 ads1115 = ADS.ADS1115(tca_multi[1])
 bme680_1 = BME.Adafruit_BME680_I2C(tca_multi[1])
 ccs811 = CCS.CCS811(tca_multi[1])
-chan = AnalogIn(ads1115, ADS.P0)
 
 # # tca_multi[7] = htu21d-f
 # htu21d = HTU.HTU21D(tca_multi[7])

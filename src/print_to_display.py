@@ -27,7 +27,7 @@ import numpy as np
 sys.path.append(".")
 from soil_moisture import get_soil_moisture
 
-# time.sleep(60)
+time.sleep(60)
 
 LOG_PATH = "/home/pi/indoor_ag/logs/print_to_display_error_log.txt"
 
