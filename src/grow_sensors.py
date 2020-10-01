@@ -18,8 +18,9 @@ import busio
 from adafruit_ads1x15.analog_in import AnalogIn
 import pandas as pd
 
-sys.path.append("./src")
-# import ds18b20 as resevior_temp
+sys.path.append(".")
+import ds18b20 as reservoir_temp
+from soil_moisture import get_soil_moisture
 
 # os.path.join does not work on the pi, it always
 # reverts to the top-level directory: /
@@ -32,6 +33,9 @@ gid = grp.getgrnam("pi").gr_gid
 # check if PATH exists and if not create empty dataframe
 if os.path.exists(SENSOR_PATH):
     sensor_df = pd.read_csv(SENSOR_PATH)
+# Because this python file gets started up at boot on the pi,
+# it runs as root so the ownership of files that get created
+# automatically need to be changed to `pi` for write privileges.
 else:
     sensor_df = pd.DataFrame()
     open(SENSOR_PATH, "w+").close()
@@ -57,6 +61,7 @@ tca_multi = TCA.TCA9548A(i2c)
 ads1115 = ADS.ADS1115(tca_multi[1])
 bme680_1 = BME.Adafruit_BME680_I2C(tca_multi[1])
 ccs811 = CCS.CCS811(tca_multi[1])
+chan = AnalogIn(ads1115, ADS.P0)
 
 # # tca_multi[7] = htu21d-f
 # htu21d = HTU.HTU21D(tca_multi[7])
