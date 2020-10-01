@@ -27,7 +27,7 @@ import numpy as np
 sys.path.append(".")
 from soil_moisture import get_soil_moisture
 
-time.sleep(60)
+# time.sleep(60)
 
 LOG_PATH = "/home/pi/indoor_ag/logs/print_to_display_error_log.txt"
 
@@ -74,7 +74,7 @@ while True:
         lcd.clear()
         temp_c_room = round(bme680_1.temperature, 1)
         rh_room = round(bme680_1.humidity, 1)
-        soil_moisture = get_soil_moisture(chan.voltage)
+        soil_moisture = round(get_soil_moisture(chan.voltage), 2)
 
         # This sensor can malfunction and throw and error, so
         # this try/except block catches any errors, waits 1 minute
@@ -85,7 +85,7 @@ while True:
             eqco2_room = np.nan
 
         lcd.message = "{temp}C | {rh}%\n{co2} ppm CO2\n" \
-                      "{soil_moisture}%".format(
+                      "{soil_moisture} VWC".format(
             temp=temp_c_room,
             rh=rh_room,
             co2=eqco2_room,
