@@ -22,7 +22,7 @@ camera.resolution = (1296, 972)
 camera.framerate = 15
 while True:
     now_dt = datetime.now()
-    if now_dt.hour in [20, 0, 4, 8]:  # Take picture when clock hits 8 pm
+    if now_dt.hour in [20, 22, 0, 2, 4, 6, 8]:  # Take picture when clock hits 8 pm
         camera.start_preview()
         # camera needs a few seconds to warm up
         sleep(5)
