@@ -148,7 +148,7 @@ while True:
         ).round(1)
         sensor_df = sensor_df.append(tmp_df)
         sensor_df.to_csv(SENSOR_PATH, index=False)
-        time.sleep(300)  # 5 minutes
+        time.sleep(600)  # 5 minutes
     except Exception as e:
         print(e)
         logging.error("Exception occurred", exc_info=True)

@@ -10,7 +10,6 @@ import grp
 import logging
 import os
 import pwd
-import sys
 import time
 
 import adafruit_ads1x15.ads1115 as ADS
@@ -24,7 +23,6 @@ import busio
 import digitalio
 import numpy as np
 
-sys.path.append(".")
 from .soil_moisture import get_soil_moisture
 
 time.sleep(60)
