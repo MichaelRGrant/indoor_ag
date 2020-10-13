@@ -25,7 +25,7 @@ import digitalio
 import numpy as np
 
 sys.path.append(".")
-from soil_moisture import get_soil_moisture
+from .soil_moisture import get_soil_moisture
 
 time.sleep(60)
 
@@ -95,3 +95,4 @@ while True:
 
     except Exception as e:
         logging.error("Exception occurred", exc_info=True)
+        time.sleep(10)
