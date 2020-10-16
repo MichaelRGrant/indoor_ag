@@ -23,7 +23,7 @@ import busio
 import digitalio
 import numpy as np
 
-from .soil_moisture import get_soil_moisture
+from soil_moisture import get_soil_moisture
 
 time.sleep(60)
 
