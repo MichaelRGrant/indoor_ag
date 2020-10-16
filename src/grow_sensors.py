@@ -20,6 +20,7 @@ import pandas as pd
 
 sys.path.append(".")
 # import ds18b20 as reservoir_temp
+from soil_moisture import get_soil_moisture
 
 # os.path.join does not work on the pi, it always
 # reverts to the top-level directory: /
@@ -60,6 +61,8 @@ tca_multi = TCA.TCA9548A(i2c)
 ads1115 = ADS.ADS1115(tca_multi[1])
 bme680_1 = BME.Adafruit_BME680_I2C(tca_multi[1])
 ccs811 = CCS.CCS811(tca_multi[1])
+# Analog channel 0 - soil moisture
+chan0 = AnalogIn(ads1115, ADS.P0)
 
 # # tca_multi[7] = htu21d-f
 # htu21d = HTU.HTU21D(tca_multi[7])
@@ -108,6 +111,10 @@ while True:
         pressure_room = round(bme680_1.pressure, 3)
         gas_room = round(bme680_1.gas, 1)
 
+        coir_vwc = round(get_soil_moisture(chan0.voltage), 2)
+        # coir50_vwc
+        # rockwool_vwc
+
         # This sensor can malfunction and throw and error, so
         # this try/except block catches any errors, waits 1 minute
         # and starts the loop over again.
@@ -143,12 +150,13 @@ while True:
                 "gas_room": gas_room,
                 "total_voc_room": tvoc_room,
                 "co2_room": eqco2_room,
+                "coir_vwc": coir_vwc
             },
             index=[0],
         ).round(1)
         sensor_df = sensor_df.append(tmp_df)
         sensor_df.to_csv(SENSOR_PATH, index=False)
-        time.sleep(600)  # 5 minutes
+        time.sleep(600)  # 10 minutes
     except Exception as e:
         print(e)
         logging.error("Exception occurred", exc_info=True)
