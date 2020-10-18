@@ -114,8 +114,8 @@ while True:
         gas_room = round(bme680_1.gas, 1)
 
         coir_vwc = round(get_soil_moisture(chan0.voltage), 2)
-        coir50_vwc = round(get_soil_moisture(chan0.voltage), 2)
-        rockwool_vwc = round(get_soil_moisture(chan0.voltage), 2)
+        coir50_vwc = round(get_soil_moisture(chan1.voltage), 2)
+        rockwool_vwc = round(get_soil_moisture(chan2.voltage), 2)
 
         # This sensor can malfunction and throw and error, so
         # this try/except block catches any errors, waits 1 minute
