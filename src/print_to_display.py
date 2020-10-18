@@ -65,14 +65,18 @@ tca_multi = TCA.TCA9548A(i2c)
 ads1115 = ADS.ADS1115(tca_multi[1])
 bme680_1 = BME.Adafruit_BME680_I2C(tca_multi[1])
 ccs811 = CCS.CCS811(tca_multi[1])
-chan = AnalogIn(ads1115, ADS.P0)
+chan0 = AnalogIn(ads1115, ADS.P0)
+chan1 = AnalogIn(ads1115, ADS.P1)
+chan2 = AnalogIn(ads1115, ADS.P2)
 
 while True:
     try:
         lcd.clear()
         temp_c_room = round(bme680_1.temperature, 1)
         rh_room = round(bme680_1.humidity, 1)
-        soil_moisture = round(get_soil_moisture(chan.voltage), 2)
+        coir_vwc = round(get_soil_moisture(chan0.voltage), 1)
+        coir50_vwc = round(get_soil_moisture(chan1.voltage), 1)
+        rockwool_vwc = round(get_soil_moisture(chan2.voltage), 1)
 
         # This sensor can malfunction and throw and error, so
         # this try/except block catches any errors, waits 1 minute
@@ -83,11 +87,15 @@ while True:
             eqco2_room = np.nan
 
         lcd.message = "{temp}C | {rh}%\n{co2} ppm CO2\n" \
-                      "{soil_moisture} VWC".format(
+                      "{coir_vwc} coir; {coir50_vwc} coir50\n"\
+                      "{rw_vwc} rockwool".format(
             temp=temp_c_room,
             rh=rh_room,
             co2=eqco2_room,
-            soil_moisture=soil_moisture
+            coir_vwc=coir_vwc,
+            coir50_vwc=coir50_vwc,
+            rw_vwc=rockwool_vwc
+
         )
         time.sleep(5)
 

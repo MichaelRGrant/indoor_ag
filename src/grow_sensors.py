@@ -63,6 +63,8 @@ bme680_1 = BME.Adafruit_BME680_I2C(tca_multi[1])
 ccs811 = CCS.CCS811(tca_multi[1])
 # Analog channel 0 - soil moisture
 chan0 = AnalogIn(ads1115, ADS.P0)
+chan1 = AnalogIn(ads1115, ADS.P1)
+chan2 = AnalogIn(ads1115, ADS.P2)
 
 # # tca_multi[7] = htu21d-f
 # htu21d = HTU.HTU21D(tca_multi[7])
@@ -112,8 +114,8 @@ while True:
         gas_room = round(bme680_1.gas, 1)
 
         coir_vwc = round(get_soil_moisture(chan0.voltage), 2)
-        # coir50_vwc
-        # rockwool_vwc
+        coir50_vwc = round(get_soil_moisture(chan0.voltage), 2)
+        rockwool_vwc = round(get_soil_moisture(chan0.voltage), 2)
 
         # This sensor can malfunction and throw and error, so
         # this try/except block catches any errors, waits 1 minute
@@ -150,7 +152,9 @@ while True:
                 "gas_room": gas_room,
                 "total_voc_room": tvoc_room,
                 "co2_room": eqco2_room,
-                "coir_vwc": coir_vwc
+                "coir_vwc": coir_vwc,
+                "coir50_vwc": coir50_vwc,
+                "rockwool_vwc": rockwool_vwc,
             },
             index=[0],
         ).round(1)
