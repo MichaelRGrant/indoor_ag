@@ -62,7 +62,7 @@ ads1115 = ADS.ADS1115(tca_multi[1])
 bme680_1 = BME.Adafruit_BME680_I2C(tca_multi[1])
 ccs811 = CCS.CCS811(tca_multi[1])
 # Analog channel 0 - soil moisture
-chan0 = AnalogIn(ads1115, ADS.P0)
+# chan0 = AnalogIn(ads1115, ADS.P0)
 chan1 = AnalogIn(ads1115, ADS.P1)
 chan2 = AnalogIn(ads1115, ADS.P2)
 
@@ -113,7 +113,7 @@ while True:
         pressure_room = round(bme680_1.pressure, 3)
         gas_room = round(bme680_1.gas, 1)
 
-        coir_vwc = round(get_soil_moisture(chan0.voltage), 2)
+        # coir_vwc = round(get_soil_moisture(chan0.voltage), 2)
         coir50_vwc = round(get_soil_moisture(chan1.voltage), 2)
         rockwool_vwc = round(get_soil_moisture(chan2.voltage), 2)
 
@@ -152,7 +152,7 @@ while True:
                 "gas_room": gas_room,
                 "total_voc_room": tvoc_room,
                 "co2_room": eqco2_room,
-                "coir_vwc": coir_vwc,
+                # "coir_vwc": coir_vwc,
                 "coir50_vwc": coir50_vwc,
                 "rockwool_vwc": rockwool_vwc,
             },
