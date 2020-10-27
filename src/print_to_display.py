@@ -73,7 +73,7 @@ while True:
     try:
         lcd.clear()
         temp_c_room = round(bme680_1.temperature, 1)
-        temp_f_room = (9/5) * temp_c_room + 32
+        temp_f_room = round((9/5) * temp_c_room + 32, 1)
         rh_room = round(bme680_1.humidity, 1)
         # coir_vwc = round(get_soil_moisture(chan0.voltage), 1)
         coir50_vwc = round(get_soil_moisture(chan1.voltage), 1)

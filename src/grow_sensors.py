@@ -109,7 +109,7 @@ while True:
 
         # Room environment
         temp_c_room = round(bme680_1.temperature, 1)
-        temp_f_room = (9/5) * temp_c_room + 32
+        temp_f_room = round((9/5) * temp_c_room + 32, 1)
         rh_room = round(bme680_1.humidity, 1)
         pressure_room = round(bme680_1.pressure, 3)
         gas_room = round(bme680_1.gas, 1)
