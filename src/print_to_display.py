@@ -73,6 +73,7 @@ while True:
     try:
         lcd.clear()
         temp_c_room = round(bme680_1.temperature, 1)
+        temp_f_room = (9/5) * temp_c_room + 32
         rh_room = round(bme680_1.humidity, 1)
         # coir_vwc = round(get_soil_moisture(chan0.voltage), 1)
         coir50_vwc = round(get_soil_moisture(chan1.voltage), 1)
@@ -86,10 +87,10 @@ while True:
         except:
             eqco2_room = np.nan
 
-        lcd.message = "{temp}C | {rh}%\n{co2} ppm CO2\n" \
+        lcd.message = "{temp}F | {rh}%\n{co2} ppm CO2\n" \
                       "NA coir; {coir50_vwc} coir50\n" \
                       "{rw_vwc} rockwool".format(
-            temp=temp_c_room,
+            temp=temp_f_room,
             rh=rh_room,
             co2=eqco2_room,
             # coir_vwc=coir_vwc,

@@ -109,6 +109,7 @@ while True:
 
         # Room environment
         temp_c_room = round(bme680_1.temperature, 1)
+        temp_f_room = (9/5) * temp_c_room + 32
         rh_room = round(bme680_1.humidity, 1)
         pressure_room = round(bme680_1.pressure, 3)
         gas_room = round(bme680_1.gas, 1)
@@ -147,6 +148,7 @@ while True:
                 # "rh_bottom_rack": rh_bottom_rack,
                 # "resevior_temp_c": resevior_temp_c,
                 "temp_c_room": temp_c_room,
+                "temp_f_room": temp_f_room,
                 "rh_room": rh_room,
                 "pressure_room": pressure_room,
                 "gas_room": gas_room,
