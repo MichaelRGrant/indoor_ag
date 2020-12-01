@@ -6,7 +6,6 @@ to backup this file but only if the size of the file is greater than
 0 bytes
 """
 
-from datetime import datetime
 import logging
 import os
 import time
@@ -22,15 +21,12 @@ logging.basicConfig(
     format="%(asctime)s - %(message)s",
 )
 
-current_file_size = os.stat(SENSOR_PATH).st_size
 
 while True:
-    now_dt = datetime.now()
     # Make a backup twice an hour
-    # if now_dt.minute in [00, 30]:
     current_file_size = os.stat(SENSOR_PATH).st_size
     if current_file_size < 1:
         logging.error("Exception occurred", exc_info=True)
     else:
         os.system("cp {} {}".format(SENSOR_PATH, SENSOR_PATH_BACKUP))
-    time.sleep(5)
+    time.sleep(600)
