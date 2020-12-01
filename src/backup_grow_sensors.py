@@ -27,10 +27,10 @@ current_file_size = os.stat(SENSOR_PATH).st_size
 while True:
     now_dt = datetime.now()
     # Make a backup twice an hour
-    if now_dt.minute in [00, 30]:
-        current_file_size = os.stat(SENSOR_PATH).st_size
-        if current_file_size < 1:
-            logging.error("Exception occurred", exc_info=True)
-        else:
-            os.system("cp {} {}".format(SENSOR_PATH, SENSOR_PATH_BACKUP))
-    time.sleep(20)
+    # if now_dt.minute in [00, 30]:
+    current_file_size = os.stat(SENSOR_PATH).st_size
+    if current_file_size < 1:
+        logging.error("Exception occurred", exc_info=True)
+    else:
+        os.system("cp {} {}".format(SENSOR_PATH, SENSOR_PATH_BACKUP))
+    time.sleep(5)
