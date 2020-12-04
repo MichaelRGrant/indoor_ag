@@ -1,0 +1,2 @@
+2020-12-04 06:28:29,682 - Exception occurred
+NoneType: None
