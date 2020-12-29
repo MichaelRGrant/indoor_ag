@@ -24,7 +24,8 @@ from soil_moisture import get_soil_moisture
 
 # os.path.join does not work on the pi, it always
 # reverts to the top-level directory: /
-SENSOR_PATH = "/home/pi/indoor_ag/data/sensors/saffron_grow_sensors.csv"
+# SENSOR_PATH = "/home/pi/indoor_ag/data/sensors/saffron_grow_sensors.csv"
+SENSOR_PATH = "/home/pi/indoor_ag/data/sensors/smoke_check.csv"
 LOG_PATH = "/home/pi/indoor_ag/logs/error_log.txt"
 
 uid = pwd.getpwnam("pi").pw_uid
