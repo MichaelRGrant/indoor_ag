@@ -9,7 +9,30 @@ import paramiko
 class DownloadFileFromPi(object):
     """
     Using the paramiko module, this function ssh into the rpi and downloads the
-    the csv file and saves it locally.
+    the csv file and saves it locally. Required are the local and remote paths for
+    saving and downlaoding, respectively, the file, and the MAC address of the
+    rpi.
+
+    The user can also input the last known IP address of the pi and the code will
+    check if that IP address matches up with the MAC address given. This is much faster
+    than scanning the computer's local network for all connected devices. This step also
+    requires the computer login password to be input as `comp_password`.
+
+    Example:
+        DownloadFileFromPi(
+            pi_username="pi",
+            pi_password="raspberry",
+            local_fname="some_file.csv",
+            remote_path="/home/pi/path/to/file.csv",
+            mac_address="AA:BB:CC:DD:EE:FF",
+            rpi_ip="192.168.1.1"
+            comp_passowrd="local_login_password"
+        ).download_file()
+
+    Recommended to take the slow approach and scan the network instead of inputting
+    the root password because it is not encrypted. Once the network has been scanned,
+    subsequent downloads should be much faster.
+
     """
 
     def __init__(
@@ -19,8 +42,8 @@ class DownloadFileFromPi(object):
         local_fname: str,
         remote_path: str,
         mac_addr: str,
-        rpi_ip: str,
-        comp_password: Optional[str] = None,
+        rpi_ip: Optional[str] = None,
+        root_password: Optional[str] = None,
     ):
         """
         :param pi_username: str
@@ -33,17 +56,24 @@ class DownloadFileFromPi(object):
             path to file on the pi
         :param mac_addr: str
             the mac address of the RPI
-        :param rpi_ip: the last known ip address of the device
+        :param rpi_ip:
+            the last known ip address of the device
+        :param root_password:
+            the root password for the local computer
         """
 
-        if comp_password is None:
+        if not re.match("([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", mac_addr):
+            raise ValueError(f"The MAC address {mac_addr} is not valid.")
+
+        if rpi_ip and root_password is None:
             raise ValueError(
-                "Must input the computer login password for `comp_password` argument."
+                "If checking the previously known rpi IP address, the root password, "
+                "i.e. `root_password` must be entered."
             )
 
         self.username = pi_username
         self.password = pi_password
-        self.comp_password = comp_password
+        self.root_password = root_password
         self.local_fname = local_fname
         self.remote_path = remote_path
         self.mac_addr = mac_addr
@@ -52,9 +82,9 @@ class DownloadFileFromPi(object):
     def check_ip_address(self):
         """
         It takes awhile to scan the network for the IP address, so this checks if the
-        IP address supplied matches the known MAC address for the device.
+        IP address supplied as the last known ip matches the known MAC address for the device.
         """
-        cmd1 = subprocess.Popen(["echo", self.comp_password], stdout=subprocess.PIPE)
+        cmd1 = subprocess.Popen(["echo", self.root_password], stdout=subprocess.PIPE)
         cmd2 = subprocess.Popen(
             ["sudo", "-S", "nmap", "-sP", "-n", self.rpi_ip],
             stdin=cmd1.stdout,
@@ -63,7 +93,7 @@ class DownloadFileFromPi(object):
         output = cmd2.stdout.read().decode()
         try:
             new_mac_addr = re.search(
-                "([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})", output
+                "([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$", output
             ).group(0)
             if new_mac_addr.lower() == self.mac_addr:
                 return True
@@ -76,8 +106,8 @@ class DownloadFileFromPi(object):
         """
         Get an ipaddress of a connected device with known MAC address.
         """
-        # ping all connected devices so arp will work for the listed mac address
-        _ = subprocess.check_output(("nmap", "-sP", "192.168.1.0/050"))
+        # ping all ips from 192.168.1.[0-50] so arp will work for the listed mac address
+        _ = subprocess.check_output(("nmap", "-sP", "192.168.1.0/24"))
         arp_res = subprocess.check_output(("arp", "-a")).decode("ascii")
         arp_list = arp_res.split("?")
         try:
@@ -101,9 +131,11 @@ class DownloadFileFromPi(object):
         """
         with paramiko.SSHClient() as ssh_client:
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-            if not self.check_ip_address():
+            if not self.rpi_ip:
                 self.rpi_ip = self.get_ip_from_mac()
                 print(f"New IP Address: {self.rpi_ip}")
+            elif self.check_ip_address():
+                pass
             ssh_client.connect(
                 hostname=self.rpi_ip, username=self.username, password=self.password
             )
