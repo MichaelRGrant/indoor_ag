@@ -10,9 +10,9 @@ import paramiko
 class DownloadFileFromPi(object):
     """
     Using the paramiko module, this function ssh into the rpi and downloads the
-    the csv file and saves it locally. Required are the local and remote paths for
-    saving and downloading, respectively, the file, and the MAC address of the
-    rpi.
+    the csv file and saves it locally to the current working directory. 
+    Required are the local and remote paths for saving and downloading, respectively, 
+    the file, and the MAC address of the rpi.
 
     The user can also input the last known IP address of the pi and the code will
     check if that IP address matches up with the MAC address given. This is much faster
@@ -23,12 +23,12 @@ class DownloadFileFromPi(object):
         DownloadFileFromPi(
             pi_username="pi",
             pi_password="raspberry",
-            local_fname="some_file.csv",
-            remote_path="/home/pi/path/to/file.csv",
             mac_address="AA:BB:CC:DD:EE:FF",
             rpi_ip="192.168.1.1"
             comp_passowrd="local_login_password"
-        ).download_file()
+        ).download_file(
+              local_fname="some_file.csv",
+              remote_path="/home/pi/path/to/file.csv")
 
     Recommended to take the slow approach and scan the network instead of inputting
     the root password because it is not encrypted. Once the network has been scanned,
