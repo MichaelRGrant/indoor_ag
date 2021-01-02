@@ -6,17 +6,18 @@ from typing import Optional
 import paramiko
 
 
+# todo make the fname and path arguments in the download_file method.
 class DownloadFileFromPi(object):
     """
     Using the paramiko module, this function ssh into the rpi and downloads the
     the csv file and saves it locally. Required are the local and remote paths for
-    saving and downlaoding, respectively, the file, and the MAC address of the
+    saving and downloading, respectively, the file, and the MAC address of the
     rpi.
 
     The user can also input the last known IP address of the pi and the code will
     check if that IP address matches up with the MAC address given. This is much faster
     than scanning the computer's local network for all connected devices. This step also
-    requires the computer login password to be input as `comp_password`.
+    requires the computer login password to be input as `root_password`.
 
     Example:
         DownloadFileFromPi(
@@ -39,8 +40,6 @@ class DownloadFileFromPi(object):
         self,
         pi_username: str,
         pi_password: str,
-        local_fname: str,
-        remote_path: str,
         mac_addr: str,
         rpi_ip: Optional[str] = None,
         root_password: Optional[str] = None,
@@ -50,10 +49,6 @@ class DownloadFileFromPi(object):
             pi username
         :param pi_password: str
             pi password
-        :param local_fname: str
-            path where the file should be saved
-        :param remote_path: str
-            path to file on the pi
         :param mac_addr: str
             the mac address of the RPI
         :param rpi_ip:
@@ -74,8 +69,6 @@ class DownloadFileFromPi(object):
         self.username = pi_username
         self.password = pi_password
         self.root_password = root_password
-        self.local_fname = local_fname
-        self.remote_path = remote_path
         self.mac_addr = mac_addr
         self.rpi_ip = rpi_ip
 
@@ -124,24 +117,30 @@ class DownloadFileFromPi(object):
 
         return ip_address
 
-    def download_file(self):
+    def download_file(self, local_fname: str, remote_path: str):
         """
         Using the paramiko module, this function ssh into the rpi and downloads the
         the csv file and saves it locally.
+
+        :param local_fname: str
+            path where the file should be saved
+        :param remote_path: str
+            path to file on the rpi
         """
         with paramiko.SSHClient() as ssh_client:
             ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
             if not self.rpi_ip:
                 self.rpi_ip = self.get_ip_from_mac()
+                # todo change to logging
                 print(f"New IP Address: {self.rpi_ip}")
-            elif self.check_ip_address():
-                pass
+            elif not self.check_ip_address():
+                self.rpi_ip = self.get_ip_from_mac()
             ssh_client.connect(
                 hostname=self.rpi_ip, username=self.username, password=self.password
             )
 
             # make local path
             cwd = os.getcwd()
-            local_path = os.path.join(cwd, self.local_fname)
+            local_path = os.path.join(cwd, local_fname)
             with ssh_client.open_sftp() as ftp_client:
-                ftp_client.get(self.remote_path, local_path)
+                ftp_client.get(remote_path, local_path)
