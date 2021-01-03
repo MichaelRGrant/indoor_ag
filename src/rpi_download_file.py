@@ -12,9 +12,9 @@ logging.basicConfig(level=logging.INFO)
 class DownloadFileFromPi:
     """
     Using the paramiko module, this function ssh into the rpi and downloads the
-    the csv file and saves it locally. Required are the local and remote paths for
-    saving and downloading, respectively, the file, and the MAC address of the
-    rpi.
+    the csv file and saves it locally to the current working directory. 
+    Required are the local and remote paths for saving and downloading, respectively, 
+    the file, and the MAC address of the rpi.
 
     The user can also input the last known IP address of the pi and the code will
     check if that IP address matches up with the MAC address given. This is much faster
