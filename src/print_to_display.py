@@ -97,8 +97,9 @@ while True:
             coir50_vwc=coir50_vwc,
             rw_vwc=rockwool_vwc
         )
-        time.sleep(5)
-
-    except Exception as e:
-        logging.error("Exception occurred", exc_info=True)
         time.sleep(10)
+
+    except:
+        lcd.message("{}".format(str(e)))
+        logging.warning(f"Exception {str(e)} occurred", exc_info=True)
+        time.sleep(60)
