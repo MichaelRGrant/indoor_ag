@@ -99,7 +99,7 @@ while True:
         )
         time.sleep(10)
 
-    except:
+    except Exception as e:
         lcd.message("{}".format(str(e)))
-        logging.warning(f"Exception {str(e)} occurred", exc_info=True)
+        logging.warning("Exception {} occurred".format(str(e)), exc_info=True)
         time.sleep(60)
